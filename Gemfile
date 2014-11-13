@@ -50,6 +50,7 @@ gem 'riiif', '0.0.9'
 gem 'openseadragon', '0.1.0'
 gem 'angularjs-rails'
 gem 'blacklight_advanced_search'
+gem 'blacklight_range_limit'
 
 gem 'language_list'
 
