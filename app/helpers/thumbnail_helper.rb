@@ -1,7 +1,7 @@
 module ThumbnailHelper
   # @parameter document SolrDocument that you want to display a thumbnail for
   def thumbnail_tag(document, image_options)
-    if document.is_a? Worthwhile::GenericFile
+    if document.is_a? Absolute::GenericFile
       generic_file_thumbnail_tag(document)
     elsif document.hydra_model == 'Audio'
       image_tag "Audio.png", class: "canonical-image"

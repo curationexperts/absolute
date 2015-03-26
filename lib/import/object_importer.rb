@@ -114,7 +114,7 @@ class ObjectImporter
     file_ids = []
     source_datastreams.each do |dsid, source_datastream|
       print_output("    Handling datastream #{dsid}:")
-      Worthwhile::GenericFile.new(batch_id: new_object.pid).tap do |file|
+      Absolute::GenericFile.new(batch_id: new_object.pid).tap do |file|
         file.add_file(source_datastream.content, 'content', dsid)
         file.visibility = visibility
         file.identifier = ["#{parent_identifier}/#{source_datastream.dsid}" ]

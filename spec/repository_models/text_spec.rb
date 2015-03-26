@@ -71,7 +71,7 @@ describe Text do
         document.save(validate: false)
       end
       let!(:generic_file) do
-        Worthwhile::GenericFile.new(batch_id: document.id).tap do |file|
+        Absolute::GenericFile.new(batch_id: document.id).tap do |file|
           file.add_file(File.open(fixture_path + '/files/anoabo00-00001.jp2', 'rb').read, 'content', 'anoabo00-00001.jp2')
           file.apply_depositor_metadata('jmc')
           file.save!

@@ -56,7 +56,7 @@ class Text < ActiveFedora::Base
 
 
   def id_for_filename(filename)
-    result = Worthwhile::GenericFile.where(is_part_of_ssim: self.internal_uri, desc_metadata__title_sim: filename).first
+    result = Absolute::GenericFile.where(is_part_of_ssim: self.internal_uri, desc_metadata__title_sim: filename).first
     result && result.id
   end
 end
