@@ -7,9 +7,13 @@
 
 <h1 class="lower"><%= @collection.title %></h1>
 
-<%= render partial: 'curation_concern/base/representative_media', locals: {work: @collection} %>
+<div>
+  <% if @collection.representative.present? %>
+    <%= image_tag download_path(@collection.representative, {datastream_id: 'thumbnail'}) %>
+  <% end %>
 
-<h3><%=@collection.description%> </h3>
+  <h3><%=@collection.description%> </h3>
+</div>
 
 <% unless has_collection_search_parameters? %>
   <%= render partial: 'collections/show_actions' %>
