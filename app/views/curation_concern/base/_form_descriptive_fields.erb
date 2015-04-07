@@ -7,3 +7,26 @@
     <%= render "form_additional_information", curation_concern: curation_concern, f: f %>
   </div>
 </div>
+<p id="drop-area" class="text-center" style="height:100px;border:10px dashed #ccc;font-size:35px;padding-top:15px;">drop your metadata here</p>
+<script>
+var holder = document.getElementById('drop-area');
+var acceptedTypes = { 'text/xml': true };
+
+// Functions to show the drop area when a file is dragged over
+holder.ondragover = function(event){
+  event.preventDefault();
+  event.target.style.border = "10px dashed green";
+};
+holder.ondragleave = function(event){
+  event.preventDefault();
+  event.target.style.border = '10px dashed #ccc';
+};
+holder.ondrop = function(event){
+  event = event || window.event;
+  event.preventDefault();
+  event.target.style.border = '10px dashed #ccc';
+  files = event.dataTransfer.files;
+  event.target.innerHTML = "Processing File";
+  getFile();
+};
+</script>

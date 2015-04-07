@@ -1,0 +1,16 @@
+<% curation_concern ||= @collection %>
+<% provide :page_title, curation_concern_page_title(curation_concern) %>
+<% provide :page_header do %>
+  <h2>Describe Your <%= curation_concern.human_readable_type %></h2>
+  <p>
+    The more descriptive information you provide the better we can serve your needs.
+  </p>
+  <p>
+    You can load all of your metadata from a Dublin core XML file by dragging and dropping it over the section at the bottom of the form. If the file is not vaild XML it may not load correctly.
+  </p>
+  <p>
+    Please consider releasing your <%= curation_concern.human_readable_type.downcase %> as an <span class="label label-success">Open Access</span> work.
+  </p>
+<% end %>
+
+<%= render 'form' %>
