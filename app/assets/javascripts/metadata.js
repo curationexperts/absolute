@@ -14,25 +14,39 @@ function extractDC(xmldoc){
   xmlIdentifier = xmldoc.getElementsByTagName("identifier");
   xmlFormat = xmldoc.getElementsByTagName("format");
 
+  // Find out what type of work we have to get the correct element names
+  var path = window.location.pathname;
+  var workType = "";
+  if(path.indexOf("concern/texts") > -1){workType = "text"; }
+  if(path.indexOf("concern/images") > -1){ workType = "image"; }
+  if(path.indexOf("concern/audios") > -1){ workType = "audio"; }
+  if(path.indexOf("concern/videos") > -1){ workType = "video"; }
+  if(path.indexOf("concern/case_generic_works") > -1){ workType = "case_generic_work"; }
+  if(path.indexOf("collection") > -1){ workType = "collection"; }
   // Get each of the elements of the form for adding content
-  title = document.getElementsByClassName("text_title")[0].getElementsByTagName("li");
-  creator = document.getElementsByClassName("text_creator")[0].getElementsByTagName("li");
-  contributor = document.getElementsByClassName("text_contributor")[0].getElementsByTagName("li");
-  description = document.getElementsByClassName("text_description")[0].getElementsByTagName("li");
-  subject = document.getElementsByClassName("text_subject")[0].getElementsByTagName("li");
-  date = document.getElementsByClassName("text_date")[0].getElementsByTagName("li");
-  publisher = document.getElementsByClassName("text_publisher")[0].getElementsByTagName("li");
-  coverage = document.getElementsByClassName("text_coverage")[0].getElementsByTagName("li");
-  source = document.getElementsByClassName("text_source")[0].getElementsByTagName("li");
-  language = document.getElementsByClassName("text_language")[0].getElementsByTagName("li");
-  type = document.getElementsByClassName("text_type")[0].getElementsByTagName("li");
-  identifier = document.getElementsByClassName("text_identifier")[0].getElementsByTagName("li");
-  format = document.getElementsByClassName("text_content_format")[0].getElementsByTagName("li");
+  if(workType == "collection"){
+    title = document.getElementsByClassName("collection_title");
+    description = document.getElementsByClassName("collection_description");
+  } else {
+    title = document.getElementsByClassName(workType + "_title")[0].getElementsByTagName("li");
+    description = document.getElementsByClassName(workType + "_description")[0].getElementsByTagName("li");
+  }
+  creator = document.getElementsByClassName(workType + "_creator")[0].getElementsByTagName("li");
+  contributor = document.getElementsByClassName(workType + "_contributor")[0].getElementsByTagName("li");
+  subject = document.getElementsByClassName(workType + "_subject")[0].getElementsByTagName("li");
+  date = document.getElementsByClassName(workType + "_date")[0].getElementsByTagName("li");
+  publisher = document.getElementsByClassName(workType + "_publisher")[0].getElementsByTagName("li");
+  coverage = document.getElementsByClassName(workType + "_coverage")[0].getElementsByTagName("li");
+  source = document.getElementsByClassName(workType + "_source")[0].getElementsByTagName("li");
+  language = document.getElementsByClassName(workType + "_language")[0].getElementsByTagName("li");
+  type = document.getElementsByClassName(workType + "_type")[0].getElementsByTagName("li");
+  identifier = document.getElementsByClassName(workType + "_identifier")[0].getElementsByTagName("li");
+  format = document.getElementsByClassName(workType + "_content_format")[0].getElementsByTagName("li");
 
   // Add the items from the XML document into the form
   for(var i = 0;i < xmlTitle.length;i++){
     title[title.length-1].getElementsByTagName("input")[0].value = xmlTitle[i].childNodes[0].wholeText;	// Title is single Valued, multiple values are combined
-    title[title.length-1].getElementsByTagName("button")[0].click();
+    if(workType != "collection"){ title[title.length-1].getElementsByTagName("button")[0].click(); }
   }
   for(var i = 0;i < xmlCreator.length;i++){
     creator[creator.length-1].getElementsByTagName("input")[0].value = xmlCreator[i].childNodes[0].wholeText;
@@ -44,7 +58,7 @@ function extractDC(xmldoc){
   }
   for(var i = 0;i < xmlDescription.length;i++){
     description[description.length-1].getElementsByTagName("textarea")[0].value = xmlDescription[i].childNodes[0].wholeText;	// Description is single valued
-    description[description.length-1].getElementsByTagName("button")[0].click();
+    if(workType != "collection"){ description[description.length-1].getElementsByTagName("button")[0].click(); }
   }
   for(var i = 0;i < xmlSubject.length;i++){
     subject[subject.length-1].getElementsByTagName("input")[0].value = xmlSubject[i].childNodes[0].wholeText;
