@@ -7,9 +7,10 @@ require 'rspec/rails'
 require 'worthwhile/spec_support'
 require 'factory_girl_rails'
 
+require 'coveralls'
+Coveralls.wear!('rails')
+
 if ENV['CI']
-  require 'coveralls'
-  Coveralls.wear!('rails')
   CodeClimate::TestReporter.start
 end
 
