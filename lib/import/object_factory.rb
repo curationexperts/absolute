@@ -56,7 +56,7 @@ class ObjectFactory
   def object_class
     if collection?
       Collection
-    elsif video?
+    elsif video? or has_links_to_video?
       Video
     elsif audio?
       Audio
@@ -144,6 +144,15 @@ class ObjectFactory
       has_matching_dsid = special_dsids.map(&:downcase).include?(dsid.downcase)
       ds = @source_object.datastreams[dsid]
       has_matching_dsid && (ds.external? || ds.redirect?)
+    }
+  end
+
+  # Load items that have a link to youtube as video instead of text
+  def has_links_to_video?
+    @source_object.datastreams.keys.any?{ |dsid|
+      has_link_dsid = ["link"].map(&:downcase).include?(dsid.downcase)
+      ds = @source_object.datastreams[dsid]
+      has_link_dsid && (ds.dsLocation.include? "youtube.com")
     }
   end
 
