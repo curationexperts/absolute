@@ -21,5 +21,6 @@
 //= require sufia/fileupload
 //= require openseadragon/rails
 //= require angular
+//= require metadata
 //= require_tree .
 
