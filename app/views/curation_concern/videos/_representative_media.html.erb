@@ -1,0 +1,10 @@
+<% if work.youtube? %>
+  <% work.linked_resources.each do |link| %>
+    <% if link.url.include?("youtube.com") %>
+      <% embed_link = URI(link.url) %>
+      <iframe width="480" height="360" src="http://www.youtube.com/embed/<%= embed_link.query.sub!("v=","") %>" frameborder="0" allowfullscreen></iframe>
+    <% end %>
+  <% end %>
+<% else %>
+  <%= render partial: 'curation_concern/base/representative_media', locals: { work: work } %>
+<% end %>
