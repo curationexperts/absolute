@@ -28,10 +28,10 @@ function getWorkType(){
   if(path.indexOf("collection") > -1){ workType = "collection"; }
 }
 
-function addValues(fields, values, input){
-  for(var i = 0;i < values.length;i++){
-    fields[fields.length-1].getElementsByTagName(input)[0].value = values[i].childNodes[0].wholeText;
-    if(workType !== "collection"){ fields[fields.length-1].getElementsByTagName("button")[0].click(); }
+function addValues(data){
+  for(var i = 0;i < data.values.length;i++){
+    data.fields[data.fields.length-1].getElementsByTagName(data.input)[0].value = data.values[i].childNodes[0].wholeText;
+    if(workType !== "collection"){ data.fields[data.fields.length-1].getElementsByTagName("button")[0].click(); }
   }
 }
 
@@ -39,9 +39,9 @@ function addValues(fields, values, input){
 // Looking for li elements will return an empty set causing an error
 function getFields(key){
   if(workType === "collection" && (key === "title" || key === "description")){
-    return document.getElementsByClassName("collection_" + key)
+    return document.getElementsByClassName("collection_" + key);
   } else {
-    return document.getElementsByClassName(workType + "_" + (key === "format" ? "content_" : "" ) + key )[0].getElementsByTagName("li")
+    return document.getElementsByClassName(workType + "_" + (key === "format" ? "content_" : "" ) + key )[0].getElementsByTagName("li");
   }
 }
 
@@ -49,12 +49,14 @@ function extractDC(xmldoc){
   getWorkType();
 
   for(var key in dublinCore){
-    dublinCore[key] = {
-      values: xmldoc.getElementsByTagName(key),
-      fields: getFields(key),
-      input: key === "description" ? "textarea" : "input"
-    };
-    addValues(dublinCore[key]["fields"], dublinCore[key]["values"], dublinCore[key]["input"]);
+    if(dublinCore.hasOwnProperty(key)){
+      dublinCore[key] = {
+        values: xmldoc.getElementsByTagName(key),
+        fields: getFields(key),
+        input: key === "description" ? "textarea" : "input"
+      };
+      addValues(dublinCore[key]);
+    }
   }
 
   document.getElementById("drop-area").innerHTML = "File Loaded";
@@ -63,11 +65,11 @@ function extractDC(xmldoc){
 
 function parseXML(file){
   if(window.DOMParser){
-    parser = new DOMParser();
-    xmldoc = parser.parseFromString(file, 'application/xml');
+    var parser = new DOMParser();
+    var xmldoc = parser.parseFromString(file, 'application/xml');
     extractDC(xmldoc);
   } else {
-    xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+    var xmldoc = new ActiveXObject("Microsoft.XMLDOM");
     xmldoc.async = false;
     xmldoc.loadxml(file);
     extractDC(xmldoc);
@@ -75,7 +77,7 @@ function parseXML(file){
 }
 
 function getFile(){
-  reader = new FileReader();
+  var reader = new FileReader();
   reader.readAsText(files[0]);
   reader.onload = function(){ parseXML(reader.result); };
 }

@@ -7,11 +7,10 @@ require 'rspec/rails'
 require 'worthwhile/spec_support'
 require 'factory_girl_rails'
 
-require 'coveralls'
-Coveralls.wear!('rails')
-
 if ENV['CI']
   CodeClimate::TestReporter.start
+  require 'coveralls'
+  Coveralls.wear!('rails')
 end
 
 # Requires supporting ruby files with custom matchers and macros, etc,
