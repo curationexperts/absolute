@@ -41,5 +41,9 @@
   </tr>
   <%= curation_concern_attribute_to_html(curation_concern, :embargo_release_date, "Embargo Release Date") %>
   <%= curation_concern_attribute_to_html(curation_concern, :lease_expiration_date, "Lease Expiration Date") %>
+  <tr>
+    <th>Permanent Link</th>
+    <td><a href="http://hdl.handle.net/2186/<%= curation_concern.pid %>">http://hdl.handle.net/2186/<%= curation_concern.pid %></a></td>
+  </tr>
   </tbody>
 </table>
