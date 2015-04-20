@@ -8,15 +8,13 @@ class CatalogController < ApplicationController
     config.facet_fields[solr_name("desc_metadata__language", :facetable)].helper_method = :display_language
   end
 
-	def export_ris
-		doc = ActiveFedora::Base.find(params[:id])
-		data = RISCreator.new(doc).export
-		send_data data, filename: 'RIS_citation_' + params[:id] + ".ris"
-	end	
+  def export_ris
+    doc = ActiveFedora::Base.find(params[:id])
+    data = RISCreator.new(doc).export
+    send_data data, filename: 'RIS_citation_' + params[:id] + ".ris"
+  end
 	
-
   protected
-
 
   def default_parameters(solr_params, _)
     unless has_search_parameters?
