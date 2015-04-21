@@ -344,7 +344,7 @@ GEM
       activesupport
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
-    openseadragon (0.2.0)
+    openseadragon (0.1.0)
       rails (> 3.2.0)
     orm_adapter (0.5.0)
     parslet (1.7.0)
@@ -621,7 +621,7 @@ DEPENDENCIES
   language_list
   launchy
   mysql2
-  openseadragon
+  openseadragon (= 0.1.0)
   pry-rescue
   pry-stack_explorer
   rails
