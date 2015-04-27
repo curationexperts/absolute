@@ -1,3 +1,3 @@
 FactoryGirl.define do
-  factory :generic_file, class: Absolute::GenericFile
+  factory :generic_file, class: Worthwhile::GenericFile
 end

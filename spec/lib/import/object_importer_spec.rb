@@ -66,7 +66,7 @@ describe ObjectImporter do
   describe '#clean_up_after_failed_import' do
     let(:object)  { FactoryGirl.create(:text) }
     let!(:gf) {
-      file = Absolute::GenericFile.new(batch_id: object.pid)
+      file = Worthwhile::GenericFile.new(batch_id: object.pid)
       file.save!
       file
     }
@@ -83,11 +83,11 @@ describe ObjectImporter do
 
     it 'deletes GenericFile and LinkedResource objects that were created as attachments to the new object' do
       importer = ObjectImporter.new(fedora_name, [object.pid])
-      file_count = Absolute::GenericFile.count - object.generic_files.count
+      file_count = Worthwhile::GenericFile.count - object.generic_files.count
       link_count = Worthwhile::LinkedResource.count - object.linked_resources.count
 
       importer.clean_up_after_failed_import(object)
-      expect(Absolute::GenericFile.count).to eq file_count
+      expect(Worthwhile::GenericFile.count).to eq file_count
       expect(Worthwhile::LinkedResource.count).to eq link_count
     end
   end
@@ -134,8 +134,8 @@ describe ObjectImporter do
     it 'attaches the file and xml files to the new object and sets representative' do
       importer.import!
 
-      expect(Absolute::GenericFile.count).to eq 1
-      file = Absolute::GenericFile.first
+      expect(Worthwhile::GenericFile.count).to eq 1
+      file = Worthwhile::GenericFile.first
       expect(file.datastreams['content'].content).to eq content
       expect(file.identifier).to eq ["ksl:weaedm186/weaedm186.pdf"]
       expect(file.visibility).to eq Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC
@@ -192,8 +192,8 @@ describe ObjectImporter do
         new_object = Text.find(new_pid)
         expect(new_object.state).to eq 'I'
 
-        expect(Absolute::GenericFile.count).to eq 1
-        file = Absolute::GenericFile.first
+        expect(Worthwhile::GenericFile.count).to eq 1
+        file = Worthwhile::GenericFile.first
         expect(file.state).to eq 'D'
         expect(file.datastreams['content'].state).to eq 'D'
 
@@ -257,8 +257,8 @@ describe ObjectImporter do
           importer.import!
         }.to change { ActiveFedora::Base.count }.by(2)
 
-        expect(Absolute::GenericFile.count).to eq 1
-        new_file = Absolute::GenericFile.first
+        expect(Worthwhile::GenericFile.count).to eq 1
+        new_file = Worthwhile::GenericFile.first
         new_collection = Collection.find(new_pid)
 
         expect(new_collection.representative).to eq new_file.pid
@@ -268,7 +268,7 @@ describe ObjectImporter do
 
   describe '#select_representative' do
     let!(:gf) {
-      file = Absolute::GenericFile.new
+      file = Worthwhile::GenericFile.new
       file.save!
       file
     }
@@ -288,7 +288,7 @@ describe ObjectImporter do
 
     context 'when the source object is a collection' do
       let!(:gf2) {
-        file = Absolute::GenericFile.new
+        file = Worthwhile::GenericFile.new
         file.save!
         file
       }

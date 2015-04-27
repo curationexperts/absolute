@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Creating a Image' do
+describe 'Creating an Image' do
   let(:user) { FactoryGirl.create(:admin) }
 
   describe 'with a related link' do

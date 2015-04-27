@@ -114,16 +114,18 @@ class ObjectImporter
     file_ids = []
     source_datastreams.each do |dsid, source_datastream|
       print_output("    Handling datastream #{dsid}:")
-      Absolute::GenericFile.new(batch_id: new_object.pid).tap do |file|
+      Worthwhile::GenericFile.new(batch_id: new_object.pid).tap do |file|
         file.add_file(source_datastream.content, 'content', dsid)
         file.visibility = visibility
         file.identifier = ["#{parent_identifier}/#{source_datastream.dsid}" ]
         file.datastreams['content'].dsState = source_datastream.state
+		#Ideally only create this extra datastream if the mime-type is jp2 or tiff, but that apparently isn't determined in this block
+		file.datastreams['jp2'] = ActiveFedora::Datastream.new('', 'jp2')
         file.save!
         print_output("      Created GenericFile #{file.pid}")
-
         set_state(file, source_datastream.state)
         file_ids << file.pid
+		#binding.pry
         Sufia.queue.push(CharacterizeJob.new(file.pid))
         @modified_queue.push(id: file.identifier.first,
                              url: curation_concern_generic_file_url(file.pid, url_params))
@@ -163,7 +165,6 @@ class ObjectImporter
     # handled when the new object gets initialized.
     exclude_datastreams = ['RELS-EXT', 'DC', 'descMetadata']
     datastreams_to_import = source_object.datastreams.keys - exclude_datastreams
-
     xml_types = ['text/xml', 'application/xml']
 
     dsids = { xml: [], attached_files: [], links: [] }
