@@ -6,6 +6,10 @@
   padding: 0 15px;
 }
 
+.blacklight-desc_metadata__identifier_tesim {
+  word-wrap: break-word;
+}
+
 #survey {
   width: auto;
 }
