@@ -1,0 +1,6 @@
+<div class="form-group">
+  <%= label_tag :collection, "Collection:", class: "control-label col-sm-2" %>
+  <div class="col-sm-10">
+    <%= select_tag :collection, options_for_select(Collection.all.collect {|x| [x.title, x.pid]} ), include_blank: "All", class: "form-control" %>
+  </div>
+</div>

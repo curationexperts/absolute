@@ -14,6 +14,12 @@ class BulkUpdateController < ApplicationController
     pids = response['response']['docs']
   end
 
+  # Get the solr query from the submitted parameters
+  def get_query(parameter)
+    response = "#{solr_field_name(params[:field])}:\"#{parameter}\""
+    response += " collection_tesim:\"#{params[:collection]}\"" unless params[:collection].nil?
+  end
+
   # map the passed in values to the correct solr name
   def solr_field_name(field)
     case field
@@ -23,12 +29,14 @@ class BulkUpdateController < ApplicationController
       return "desc_metadata__creator_sim"
     when "language"
       return "desc_metadata__language_sim"
+    when "description"
+      return "desc_metadata__description_tesim"
     end
   end
 
   # This funcion replaves an :old value with a :new value
   def replace
-    get_pids("#{solr_field_name(params[:field])}:\"#{params[:old]}\"").each do |pid|
+    get_pids(get_query(params[:old])).each do |pid|
       item = ActiveFedora::Base.find(pid['id'])
       if item[params[:field]].include? params[:old]
         item[params[:field]] -= [params[:old]]
@@ -47,7 +55,7 @@ class BulkUpdateController < ApplicationController
       redirect_to bulk_update_path and return
     end
 
-    get_pids("#{solr_field_name(params[:field])}:\"#{params[:string]}\"").each do |pid|
+    get_pids(get_query(params[:string])).each do |pid|
       item = ActiveFedora::Base.find(pid['id'])
       if item[params[:field]].include? params[:string]
         item[params[:field]] << params[:string].split(params[:char]).collect(&:strip)

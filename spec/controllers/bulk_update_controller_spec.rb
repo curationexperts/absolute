@@ -36,6 +36,7 @@ describe BulkUpdateController do
       source_text.subject = ["Never", "gonna", "give", "you", "up"]
       source_text.language = ['Eng']
       source_text.creator = ['Rick Astley']
+      source_text.description = ['N.A.']
       source_text.save
     end
 
@@ -60,6 +61,14 @@ describe BulkUpdateController do
 
       item = ActiveFedora::Base.find(source_text.pid)
       expect(item.creator).to eq ["Astley, Rick"]
+      expect(response).to redirect_to bulk_update_path
+    end
+
+    it 'should replace a description with a new value' do
+      post :replace, field: "description", old: "N.A.", new: "Here is a description"
+
+      item = ActiveFedora::Base.find(source_text.pid)
+      expect(item.description).to eq ["Here is a description"]
       expect(response).to redirect_to bulk_update_path
     end
   end
