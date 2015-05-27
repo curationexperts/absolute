@@ -1,0 +1,18 @@
+<h3>Update a Collections Rights</h3>
+<%= form_tag("/bulk_update/update_rights", class: "form-horizontal") do %>
+  <div class="form-group">
+    <%= label_tag :collection, "Collection:", class: "control-label col-sm-2" %>
+    <div class="col-sm-10">
+      <%= select_tag :collection, options_for_select(Collection.all.collect {|x| [x.title, x.pid]}), class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <%= label_tag :rights, "Rights:", class: "control-label col-sm-2" %>
+    <div class="col-sm-10">
+      <%= select_tag :rights, options_for_select(Sufia.config.cc_licenses), class: "form-control" %>
+    </div>
+  </div>
+  <div class="col-sm-offset-2 col-sm-2">
+    <%= submit_tag "Update", class: "btn btn-default btn-primary" %>
+  </div>
+<% end %>

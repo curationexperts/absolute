@@ -67,4 +67,16 @@ class BulkUpdateController < ApplicationController
     redirect_to bulk_update_path
   end
 
+  # This function takes a collection PID and a rights statement and updates all collection
+  # members to have the selected rights statement
+  def update_rights
+    collection = ActiveFedora::Base.find(params[:collection])
+    collection.members.each do |member|
+      member.rights = [params[:rights]]
+      member.save
+      member.update_index
+    end
+    redirect_to bulk_update_path
+  end
+
 end

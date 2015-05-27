@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe BulkUpdateController do
   let(:source_text) { Text.new(pid: 'ksl:test', title: ["A Test Title"], description: ["A test"], rights: [Sufia.config.cc_licenses.first]) }
+  let(:test_object) { Text.new(pid: 'ksl:tst2', title: ["Another Test"], description: ["A test"], rights: [Sufia.config.cc_licenses.second]) }
+  let(:collection1) { Collection.new(pid: "ksl:col1", title: "Collection #1") }
+  let(:collection2) { Collection.new(pid: "ksl:col2", title: "Collection #2") }
 
   before :all do
     ActiveFedora::Base.delete_all
@@ -113,6 +116,24 @@ describe BulkUpdateController do
 
       expect(response).to redirect_to bulk_update_path
       expect(flash[:alert]).to eq "No delimiter entered"
+    end
+  end
+
+  describe "#update_rights" do
+    let(:admin) { FactoryGirl.create(:admin) }
+
+    before :each do
+      sign_in admin
+      collection1.members << source_text
+      collection2.members << test_object
+    end
+
+    it 'should update the rights statements of the selected collection and not other collections' do
+      skip "This code works when tested directly, but fails when run by rspec"
+      post :update_rights, collection: collection2.pid, rights: Sufia.config.cc_licenses.third
+
+      expect(ActiveFedora::Base.find(source_text.pid).rights).to eq [Sufia.config.cc_licenses.first]
+      expect(ActiveFedora::Base.find(test_object.pid).rights).to eq [Sufia.config.cc_licenses.third]
     end
   end
 
