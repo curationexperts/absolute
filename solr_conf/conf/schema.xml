@@ -13,8 +13,9 @@
     <field name="lat" type="tdouble" stored="true" indexed="true" multiValued="false"/>
     <field name="lng" type="tdouble" stored="true" indexed="true" multiValued="false"/>
 
-    <!-- To hold the lowercased subjects for sorting purposes -->
+    <!-- Fields to hold additional index for special facets (case insensitive sort and date sort) -->
     <field name="subject_sort" type="alphaSort" stored="false" indexed="true" multiValued="true"/>
+    <field name="date_sort" type="TrieDateField" stored="false" indexed="true" multivalued="true"/>
 
     <!-- NOTE:  not all possible Solr field types are represented in the dynamic fields -->
 
