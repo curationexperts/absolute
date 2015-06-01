@@ -91,6 +91,13 @@ rake jetty:config
 rake jetty:start
 ```
 
+to include the `subject_sort` field that is used to order the facets you need to copy the updated `schema.xml` file into jetty
+
+```bash
+cp solr_conf/conf/schema.xml jetty/solr/development-core/conf/schema.xml
+cp solr_conf/conf/schema.xml jetty/solr/test-core/conf/schema.xml
+```
+
 ## Development
 
 ### Starting the workers
