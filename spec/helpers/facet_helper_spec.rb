@@ -51,19 +51,19 @@ describe FacetHelper do
       it { should eq 'gonna' }
     end
     before do
-      GenericWork.create!(pid: "rick:123", title: ["Let's Roll"], subject: ["Never", "gonna", "give", "you", "Up"])
+      GenericWork.create!(id: "rick:123", title: ["Let's Roll"], subject: ["Never", "gonna", "give", "you", "Up"])
     end
   end
   
   describe '#curation_concern_with_link_to_html' do
     context 'when field not a valid url' do
-      let(:regular_source) { GenericWork.create!(pid: "me:123", title: ["Just a Test"], source: ["National Geographic"]) }
+      let(:regular_source) { GenericWork.create!(id: "me:123", title: ["Just a Test"], source: ["National Geographic"]) }
       subject {helper.curation_concern_with_link_to_html(regular_source, :source, "Source") }
       it { should eq "<tr><th>Source</th>\n<td><ul class='tabular'><li class=\"attribute source\"> National Geographic </li>\n</ul></td></tr>"}
     end
 
     context 'when field is a valid url' do
-      let(:regular_source) { GenericWork.create!(pid: "me:456", title: ["Just a Test"], source: ["http://library.case.edu"]) }
+      let(:regular_source) { GenericWork.create!(id: "me:456", title: ["Just a Test"], source: ["http://library.case.edu"]) }
       subject { helper.curation_concern_with_link_to_html(regular_source, :source, "Source") }
       it { should eq "<tr><th>Source</th>\n<td><ul class='tabular'><li class=\"attribute source\"> <a href=\"http://library.case.edu\" target=\"_blank\">http://library.case.edu</a> </li>\n</ul></td></tr>"}
     end

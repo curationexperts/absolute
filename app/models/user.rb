@@ -22,4 +22,9 @@ class User < ActiveRecord::Base
   def to_s
     user_key
   end
+
+  # TODO: Add orcid integration
+  def orcid
+    return nil
+  end
 end

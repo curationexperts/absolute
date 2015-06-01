@@ -38,10 +38,10 @@ gem 'capistrano-bundler', '~> 1.1.2', group: :development
 
 gem 'coveralls', require: false
 gem 'codeclimate-test-reporter', group: :test, require: nil
-#gem 'worthwhile', '0.1.1'
-gem 'worthwhile', github: 'projecthydra-labs/worthwhile', ref: 'adbb1'
+#gem 'worthwhile', '0.1.2'
+gem 'worthwhile', github: 'projecthydra-labs/worthwhile'
 
-gem 'hydra', '7.1.0'
+gem 'hydra', '9.0.0'
 
 gem "bootstrap-sass"
 gem 'hydra-role-management', '0.1.0'

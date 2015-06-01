@@ -14,8 +14,8 @@ module CurationConcern::WithDatastreamAttachments
     def self.accept_datastream_attachments(attachment_dsids)
       attachment_dsids.each do |attachment_dsid|
         self.accepted_attachments << attachment_dsid
-        has_file_datastream attachment_dsid, type: FileContentDatastream
-        attr_accessor attachment_dsid.to_sym
+        #has_file_datastream attachment_dsid, type: FileContentDatastream
+        #attr_accessor attachment_dsid.to_sym
       end
     end
   end

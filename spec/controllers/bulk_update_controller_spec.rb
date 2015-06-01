@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe BulkUpdateController do
-  let(:source_text) { Text.new(pid: 'ksl:test', title: ["A Test Title"], description: ["A test"], rights: [Sufia.config.cc_licenses.first]) }
-  let(:test_object) { Text.new(pid: 'ksl:tst2', title: ["Another Test"], description: ["A test"], rights: [Sufia.config.cc_licenses.second]) }
-  let(:collection1) { Collection.new(pid: "ksl:col1", title: "Collection #1") }
-  let(:collection2) { Collection.new(pid: "ksl:col2", title: "Collection #2") }
+  let(:source_text) { Text.new(id: 'ksl:test', title: ["A Test Title"], description: ["A test"], rights: [Sufia.config.cc_licenses.first]) }
+  let(:test_object) { Text.new(id: 'ksl:tst2', title: ["Another Test"], description: ["A test"], rights: [Sufia.config.cc_licenses.second]) }
+  let(:collection1) { Collection.new(id: "ksl:col1", title: "Collection #1") }
+  let(:collection2) { Collection.new(id: "ksl:col2", title: "Collection #2") }
 
   before :all do
     ActiveFedora::Base.delete_all
