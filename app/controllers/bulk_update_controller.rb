@@ -8,32 +8,6 @@ class BulkUpdateController < ApplicationController
   def update
   end
 
-  # Get the PIDs for a specified search
-  def get_pids(query)
-    response = remote_solr.get('select', params: { q: query, fl: "id", rows: 100000 } )
-    pids = response['response']['docs']
-  end
-
-  # Get the solr query from the submitted parameters
-  def get_query(parameter)
-    response = "#{solr_field_name(params[:field])}:\"#{parameter}\""
-    response += " collection_tesim:\"#{params[:collection]}\"" unless params[:collection].nil?
-  end
-
-  # map the passed in values to the correct solr name
-  def solr_field_name(field)
-    case field
-    when "subject"
-      return "desc_metadata__subject_sim"
-    when "creator"
-      return "desc_metadata__creator_sim"
-    when "language"
-      return "desc_metadata__language_sim"
-    when "description"
-      return "desc_metadata__description_tesim"
-    end
-  end
-
   # This funcion replaves an :old value with a :new value
   def replace
     get_pids(get_query(params[:old])).each do |pid|
@@ -77,6 +51,34 @@ class BulkUpdateController < ApplicationController
       member.update_index
     end
     redirect_to bulk_update_path
+  end
+
+private
+
+  # Get the PIDs for a specified search
+  def get_pids(query)
+    response = remote_solr.get('select', params: { q: query, fl: "id", rows: 100000 } )
+    pids = response['response']['docs']
+  end
+
+  # Get the solr query from the submitted parameters
+  def get_query(parameter)
+    response = "#{solr_field_name(params[:field])}:\"#{parameter}\""
+    response += " collection_tesim:\"#{params[:collection]}\"" unless params[:collection].nil?
+  end
+
+  # map the passed in values to the correct solr name
+  def solr_field_name(field)
+    case field
+    when "subject"
+      return "desc_metadata__subject_sim"
+    when "creator"
+      return "desc_metadata__creator_sim"
+    when "language"
+      return "desc_metadata__language_sim"
+    when "description"
+      return "desc_metadata__description_tesim"
+    end
   end
 
 end
