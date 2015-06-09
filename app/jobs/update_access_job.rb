@@ -10,11 +10,8 @@ class UpdateAccessJob
     @pids << collection
     @visibility = visibility
 
-    puts @pids
     while @pids.length > 0
-      puts "PIDs: #{@pids}"
       item = ActiveFedora::Base.find(@pids.pop)
-      puts "class: #{item.class}"
 
       if item.class.name == "Collection" then
         item.members.each do |member|
@@ -28,7 +25,6 @@ class UpdateAccessJob
         end
       end
 
-      puts "PIDs: #{@pids}"
       item.visibility = @visibility
       item.save!
       item.update_index
