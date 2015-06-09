@@ -53,6 +53,12 @@ class BulkUpdateController < ApplicationController
     redirect_to bulk_update_path
   end
 
+  # This function updates the visibility of a collection and all of the items in that collection
+  def update_access
+    Resque.enqueue(UpdateAccessJob, params[:collection], params[:visibility] )
+    redirect_to bulk_update_path
+  end
+
 private
 
   # Get the PIDs for a specified search

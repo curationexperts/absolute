@@ -1,0 +1,50 @@
+<h3>Update Access Rights</h3>
+<%= form_tag "/bulk_update/update_access", class: "form-horizontal" do %>
+  <div class="form-group">
+    <%= label_tag :collection, "Collection:", class: "control-label col-sm-1" %>
+    <div class="col-sm-11">
+      <%= select_tag :collection, options_for_select(Collection.all.collect {|x| [x.title, x.pid]}), class: "form-control" %>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-11">
+      <div class="form-group" id="set-access-controls">
+        <label class="radio">
+          <%= radio_button_tag :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PUBLIC, checked: true %>
+          <span class="label label-success">Open Access</span> Visible to the world.
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_AUTHENTICATED %>
+          <span class="label label-info"><%=t('sufia.institution_name') %></span> Visible to all <%=t('sufia.institution_name') %> users.
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_EMBARGO %>
+          <div class="form-inline">
+            <span class="label label-warning">Embargo</span> Restricted to
+            <%= select_tag :visibility_during_embargo, options_for_select(visibility_options(:restrict)), class: "form-control" %> until
+            <%= date_field_tag :embargo_expiration_date, Date.tomorrow, class: "datepicker form-control" %> then open it up to
+            <%= select_tag :visibility_after_embargo, options_for_select(visibility_options(:loosen)), class: "form-control" %>
+          </div>
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :visibility, "lease" %>
+          <div class="form-inline">
+            <span class="label label-warning">Lease</span> Is available for
+            <%= select_tag :visibility_during_lease, options_for_select(visibility_options(:loosen)), class: "form-control" %> until
+            <%= date_field_tag :lease_expiration_date, Date.tomorrow, class: "datepicker form-control" %> then restrict it to
+            <%= select_tag :visibility_after_lease, options_for_select(visibility_options(:restrict)), class: "form-control" %>
+          </div>
+        </label>
+        <label class="radio">
+          <%= radio_button_tag :visibility, Hydra::AccessControls::AccessRight::VISIBILITY_TEXT_VALUE_PRIVATE %>
+          <span class="label label-danger">Private</span> Only visible to you and your delegates.
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-2">
+      <%= submit_tag "Update", class: "btn btn-default btn-primary" %>
+    </div>
+  </div>
+<% end %>

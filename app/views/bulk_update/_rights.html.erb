@@ -12,7 +12,9 @@
       <%= select_tag :rights, options_for_select(Sufia.config.cc_licenses), class: "form-control" %>
     </div>
   </div>
-  <div class="col-sm-offset-2 col-sm-2">
-    <%= submit_tag "Update", class: "btn btn-default btn-primary" %>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-2">
+      <%= submit_tag "Update", class: "btn btn-default btn-primary" %>
+    </div>
   </div>
 <% end %>

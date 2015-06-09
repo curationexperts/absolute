@@ -27,5 +27,6 @@ Absolute::Application.routes.draw do
   post '/bulk_update/replace', to: 'bulk_update#replace'
   post '/bulk_update/update_identifier', to: 'bulk_update#update_identifier'
   post '/bulk_update/update_rights', to: 'bulk_update#update_rights'
+  post '/bulk_update/update_access', to: 'bulk_update#update_access'
   get '/bulk_update', to: 'bulk_update#index'
 end

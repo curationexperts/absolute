@@ -142,22 +142,13 @@ describe BulkUpdateController do
 
     before :each do
       sign_in admin
-      source_text.visibility = "open"
-      source_text.save
-      test_object.visibility = "open"
-      text_object.save
-      collection1.members << source_text
-      collection1.members << test_object
     end
 
     it "should update a collection to restrict access to works and their files" do
-      skip "not yet implemented"
+      skip "Should only create a resque task"
       post :update_access, pid: collection1.pid, visibility: "restricted"
 
-      expect(ActiveFedora::Base.find(collection1.pid).visibility).to eq "restricted"
-      expect(ActiveFedora::Base.find(source_text.pid).visibility).to eq "restricted"
-      expect(ActiveFedora::Base.find(test_object.pid).visibility).to eq "restricted"
-      # TODO: add test for attached files
+      
       expect(response).to redirect_to bulk_update_path
     end
   end
@@ -167,22 +158,12 @@ describe BulkUpdateController do
 
     before :each do
       sign_in admin
-      source_text.visibility = "restricted"
-      source_text.save
-      test_object.visibility = "restricted"
-      test_object.save
-      collection1.members << source_text
-      collection1.members << test_object
     end
 
     it "should update a collection to open access to the works and their files" do
-      skip "not yet implemented"
+      skip "Should only create a reqque task"
       post :update_access, pid: collection1.pid, visibility: "open"
 
-      expect(ActiveFedora::Base.find(collection1.pid).visibility).to eq "open"
-      expect(ActiveFedora::Base.find(source_text.pid).visibility).to eq "open"
-      expect(ActiveFedora::Base.find(test_object.pid).visibility).to eq "open"
-      # TODO: Add test for attached files
       expect(response).to redirect_to bulk_update_path
     end
   end
