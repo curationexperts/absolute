@@ -1,0 +1,6 @@
+handle:
+  namespace: 1234
+  domain: www.example.com
+  root_path: /hs
+  server: /svr_1
+  password: keypass

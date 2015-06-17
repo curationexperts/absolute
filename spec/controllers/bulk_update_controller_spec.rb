@@ -145,10 +145,9 @@ describe BulkUpdateController do
     end
 
     it "should update a collection to restrict access to works and their files" do
-      skip "Should only create a resque task"
       post :update_access, pid: collection1.pid, visibility: "restricted"
 
-      
+      expect(flash[:notice]).to eq "The collection #{collection1.name} is being updated to #{visibility}"
       expect(response).to redirect_to bulk_update_path
     end
   end
@@ -161,9 +160,9 @@ describe BulkUpdateController do
     end
 
     it "should update a collection to open access to the works and their files" do
-      skip "Should only create a reqque task"
       post :update_access, pid: collection1.pid, visibility: "open"
 
+      expect(flash[:notice]).to eq "The collection #{collection1.name} is being updated to #{visibility}"
       expect(response).to redirect_to bulk_update_path
     end
   end

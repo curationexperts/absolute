@@ -56,6 +56,7 @@ class BulkUpdateController < ApplicationController
   # This function updates the visibility of a collection and all of the items in that collection
   def update_access
     Resque.enqueue(UpdateAccessJob, params[:collection], params[:visibility] )
+    flash[:notice] = "The collection #{Collection.find(params[:collection]).name} is being updated to #{params[:visibility]}"
     redirect_to bulk_update_path
   end
 

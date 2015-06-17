@@ -69,6 +69,7 @@ cp config/solr.yml.sample config/solr.yml
 cp config/redis.yml.sample config/redis.yml
 cp config/fedora.yml.sample config/fedora.yml
 cp config/devise.yml.sample config/devise.yml
+cp config/handle.yml.sample config/handle.yml
 ```
 !!! Important. Open config/devise.yml and generate a new id
 !!! Edit config/initializers/secret_token.rb and config/devise.yml replace the sample keys with your own keys.  You can use rake to generate a new secret key:
@@ -97,6 +98,31 @@ to include the `subject_sort` field that is used to order the facets you need to
 cp solr_conf/conf/schema.xml jetty/solr/development-core/conf/schema.xml
 cp solr_conf/conf/schema.xml jetty/solr/test-core/conf/schema.xml
 ```
+
+### Install the handle server
+
+when objects are created the application automatically updates the handle.net identifiers to match the newly created or updated items. The handle server requires java to run. The handle server can be installed with
+
+```bash
+wget http://www.handle.net/hs-source/hsj-7.3.1.tar.gz
+sudo mkdir -p /hs/svr_1
+sudo tar -xzf hsj-7.3.1.tar.gz -C /hs
+rm hsj-7.3.1.tar.gz
+```
+
+Now that the handle server is installed on the server it has to be configured and started. Use
+
+```bash
+/hs/bin/hdl-setup-server /hs/srv_1
+```
+
+and enter the requested information about the handle server. Once the server is configured you can use
+
+```bash
+/hs/bin/hdl-server /hs/svr_1
+```
+
+to start the handle server.
 
 ## Development
 
@@ -147,6 +173,12 @@ Exported 223 records to handles-2014-08-06T11:48:51.txt
 ```
 
 Then take this file and import them using the handle.net batch tool.
+
+### Setup for automatic handle generation
+
+When a new work is created or new files are added to existing works the application will create a task to update the related handles on the handle server. This requires that the location of the handle server is listed in the `handle.yml` file.
+
+The task will take the PIDs and locations for the created/updated items and create a batch update file that incldes creation of new handles and udpates to existing handles. This will then be run against the handle server to update the saved handles.
 
 ## Deploying to the Case vm with Oracle
 
