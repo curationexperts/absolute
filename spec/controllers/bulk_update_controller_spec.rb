@@ -124,16 +124,21 @@ describe BulkUpdateController do
 
     before :each do
       sign_in admin
+      source_text.rights = [Sufia.config.cc_licenses.first]
       collection1.members << source_text
       collection2.members << test_object
     end
 
     it 'should update the rights statements of the selected collection and not other collections' do
-      skip "This code works when tested directly, but fails when run by rspec"
+      #skip "This code works when tested directly, but fails when run by rspec"
       post :update_rights, collection: collection2.pid, rights: Sufia.config.cc_licenses.third
 
-      expect(ActiveFedora::Base.find(source_text.pid).rights).to eq [Sufia.config.cc_licenses.first]
-      expect(ActiveFedora::Base.find(test_object.pid).rights).to eq [Sufia.config.cc_licenses.third]
+      first_item = ActiveFedora::Base.find(source_text.pid)
+      second_item = ActiveFedora::Base.find(test_object.pid)
+ 
+      expect(first_item.rights).to eq [Sufia.config.cc_licenses.first]
+      expect(second_item.rights).to eq [Sufia.config.cc_licenses.third]
+      expect(response).to redirect_to bulk_update_path
     end
   end
 
@@ -145,9 +150,10 @@ describe BulkUpdateController do
     end
 
     it "should update a collection to restrict access to works and their files" do
-      post :update_access, pid: collection1.pid, visibility: "restricted"
+      visibility = "resrticted"
+      post :update_access, collection: collection1.pid, visibility: visibility
 
-      expect(flash[:notice]).to eq "The collection #{collection1.name} is being updated to #{visibility}"
+      expect(flash[:notice]).to eq "The collection #{collection1.title} is being updated to #{visibility}"
       expect(response).to redirect_to bulk_update_path
     end
   end
@@ -160,10 +166,11 @@ describe BulkUpdateController do
     end
 
     it "should update a collection to open access to the works and their files" do
-      post :update_access, pid: collection1.pid, visibility: "open"
+      visibility = "open"
+      post :update_access, collection: collection1.pid, visibility: visibility
 
-      expect(flash[:notice]).to eq "The collection #{collection1.name} is being updated to #{visibility}"
       expect(response).to redirect_to bulk_update_path
+      expect(flash[:notice]).to eq "The collection #{collection1.title} is being updated to #{visibility}"
     end
   end
 

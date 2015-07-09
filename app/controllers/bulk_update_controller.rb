@@ -5,9 +5,6 @@ class BulkUpdateController < ApplicationController
 
   authorize_resource class: false
 
-  def update
-  end
-
   # This funcion replaves an :old value with a :new value
   def replace
     get_pids(get_query(params[:old])).each do |pid|
@@ -56,7 +53,7 @@ class BulkUpdateController < ApplicationController
   # This function updates the visibility of a collection and all of the items in that collection
   def update_access
     Resque.enqueue(UpdateAccessJob, params[:collection], params[:visibility] )
-    flash[:notice] = "The collection #{Collection.find(params[:collection]).name} is being updated to #{params[:visibility]}"
+    flash[:notice] = "The collection #{Collection.find(params[:collection]).title} is being updated to #{params[:visibility]}"
     redirect_to bulk_update_path
   end
 
