@@ -6,9 +6,11 @@ gem 'rails', '4.1.11'
 gem 'sqlite3'
 gem 'mysql2'  # used on sandbox
 
-# two gems required for oracle database connection
-gem 'activerecord-oracle_enhanced-adapter'
-gem 'ruby-oci8'
+group :production do
+  # two gems required for oracle database connection
+  gem 'activerecord-oracle_enhanced-adapter'
+  gem 'ruby-oci8'
+end
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '5.0.3'
