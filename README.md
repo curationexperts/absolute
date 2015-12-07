@@ -136,7 +136,7 @@ you'll get helpful comments in the source like this:
 
 ### Importing fedora objects from Case Western's existing fedora
 
-Information about importing object is now on [the wiki](https://github.com/curationexperts/absolute/wiki/Migration-Script)
+Information about importing objects is now on [the wiki](https://github.com/KelvinSmithLibrary/absolute/wiki)
 
 ### Exporting the imported URLs to a Handle.net batch file:
 
