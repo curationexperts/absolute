@@ -14,9 +14,11 @@ class ObjectImporter
     @remote_fedora_name = remote_fedora_name
     @pids = pids
     @verbose = verbose
+    $stdout.sync = true
   end
 
   def import!
+    @log_mode = 'import'
     @failed_imports = []
     @pids.each_with_index do |pid, i|
       print_output "Importing record #{i + 1} of #{@pids.count} : #{pid}"
@@ -36,7 +38,13 @@ class ObjectImporter
   end
 
   def import_object(pid)
-    source_object = remote_fedora.find(pid)
+    begin
+      source_object = remote_fedora.find(pid)
+    rescue
+      print_output "Couldn't read #{pid} from #{@remote_fedora_name}"
+    end
+
+
     klass, attributes = ObjectFactory.new(source_object).build_object
     attributes[:rights] = set_rights(attributes[:rights], pid)
 
@@ -115,7 +123,11 @@ class ObjectImporter
     source_datastreams.each do |dsid, source_datastream|
       print_output("    Handling datastream #{dsid}:")
       Worthwhile::GenericFile.new(batch_id: new_object.pid).tap do |file|
-        file.add_file(source_datastream.content, 'content', dsid)
+        begin
+          file.add_file(source_datastream.content, 'content', dsid)
+        rescue Exception => e
+          raise $!, "Unable to read content from datastream #{dsid}: #{$!}", $!.backtrace
+        end
         file.visibility = visibility
         file.identifier = ["#{parent_identifier}/#{source_datastream.dsid}" ]
         file.datastreams['content'].dsState = source_datastream.state
@@ -235,6 +247,7 @@ class ObjectImporter
     return unless @verbose
     File.open(log_file, 'a') { |io| io.puts message }
     puts message
+
   end
 
   def log_file
@@ -242,7 +255,12 @@ class ObjectImporter
     log_dir = File.join(Rails.root, 'log', 'imports')
     FileUtils.mkdir_p(log_dir)
     timestamp = Time.now.strftime("%Y_%m_%d_%H%M%S")
-    @log_file = File.join(log_dir, "object_import_#{timestamp}.log")
+    if @log_mode = 'validate'
+      file_extension = 'csv'
+    else
+      file_extension = 'log'
+    end
+    @log_file = File.join(log_dir, "object_#{@log_mode}_#{timestamp}.#{file_extension}")
   end
 
   def final_import_status
@@ -259,4 +277,89 @@ class ObjectImporter
   def url_params
     { host: 'digital.case.edu', script_name: Rails.application.config.relative_url_root }
   end
+
+
+  def validate
+    @verbose = false
+    @log_mode = 'validate'
+    remote_fedora
+    @verbose = true
+    print_output "Time, PID, Match, Class, Source, Dest, DS1name, DS1src, DS1dest, DS2name, DS2src, DS2dest, DS3name, DS3src, DS3dest, DS4name, DS4src, DS4dest, "
+    @pids.each_with_index do |pid, i|
+      # print_output "Verifying record #{i + 1} of #{@pids.count} : #{pid}"
+      validate_object(pid)
+    end
+
+    puts
+    puts "Validation output saved to #{log_file}"
+  end
+
+  def validate_object(pid)
+    log_row = []
+
+    source_object, status = remote_find(:source, pid)
+    log_row << status
+
+    migrated_object, status = remote_find(:dest, pid)
+    log_row << status
+
+    if source_object.pid == migrated_object.pid
+      match, status = compare_datastreams(source_object, migrated_object)
+      log_row << status
+    else
+      match = false
+    end
+
+    klass = ObjectFactory.new(source_object).object_class
+    log_row = [ Time.now.strftime('%FT%T'), pid, match, klass] + log_row
+    print_output log_row.join(', ')
+
+    validate_colleciton_members(source_object) if klass == Collection
+  end
+
+  def remote_find (target, pid)
+    if target == :source
+     connector = remote_fedora
+    else # :dest
+     connector =  ActiveFedora::Base
+    end
+
+    begin
+      object = connector.find(pid)
+      status = "found"
+    rescue
+      object = Rubydora::DigitalObject.new(target.to_s)
+      status = "missing"
+    end
+
+    return object, status
+  end
+
+  def compare_datastreams(source_object, migrated_object)
+    dsids = classify_datastreams(source_object)
+
+    # check xml datastreams
+    status = dsids[:xml].map {|ds| [ds, source_object.datastreams[ds].content.length, migrated_object.datastreams[ds].content.length]}
+
+    # check file datastreams
+    # generic_file.where seems to be broken
+    # status += dsids[:attached_files].map { |file_ds| [file_ds, source_object.datastreams[file_ds].profile['dsSize'], migrated_object.generic_files.where(title: file_ds).first.datastreams['content'].size] }
+    # use this as a workaround
+    status += dsids[:attached_files].map { |file_ds| [file_ds, source_object.datastreams[file_ds].profile['dsSize'], migrated_object.generic_files.detect{|f| f.filename == file_ds}.file_size.first] }
+    match = true
+    status.each do |ds_stat|
+      match &= (ds_stat[1].to_s == ds_stat[2].to_s)
+    end
+    return match, status
+  end
+
+  def validate_colleciton_members(source_object)
+    rels = source_object.datastreams['RELS-EXT'].content
+    member_ids = RelsExtParser.new(rels).collection_member_ids
+
+    member_ids.each do |pid|
+      validate_object(pid)
+    end
+  end
+
 end
